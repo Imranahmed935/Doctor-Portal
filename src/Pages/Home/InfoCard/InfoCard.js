@@ -3,9 +3,9 @@ import React from "react";
 const InfoCard = ({ card }) => {
   const { name, description, icon } = card;
   return (
-    <div className="card card-side bg-gradient-to-r from-success to-primary px-5 shadow-xl">
+    <div className="card md:card-side bg-gradient-to-r from-success to-primary p-5 shadow-xl">
       <figure>
-        <img src={icon} alt="Movie" />
+        <img className="" src={icon} alt="Movie" />
       </figure>
       <div className="card-body">
         <h2 className="card-title">{name}</h2>
