@@ -49,12 +49,12 @@ const Navbar = () => {
             {menuItems}
           </ul>
         </div>
-        <Link to="/" className="btn btn-ghost normal-case text-xl">
+        <Link to="/" className="btn btn-ghost bg-success normal-case text-3xl font-extrabold ">
           Doctor Portal
         </Link>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">{menuItems}</ul>
+        <ul className="menu menu-horizontal font-semibold font-sans text-xl px-1">{menuItems}</ul>
       </div>
     </div>
   );
