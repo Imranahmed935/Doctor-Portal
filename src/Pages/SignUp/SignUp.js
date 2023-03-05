@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../Contexts/AuthProvider";
 
 const SignUp = () => {
   const {
@@ -9,8 +10,16 @@ const SignUp = () => {
     handleSubmit,
   } = useForm();
 
+  const { createUser } = useContext(AuthContext);
+
   const handleSignUp = (data) => {
     console.log(data);
+    createUser(data.email, data.password)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
@@ -59,13 +68,18 @@ const SignUp = () => {
                   value: 6,
                   message: "password must be 6 character or longer",
                 },
+
+                pattern: {
+                  value: /.*[A-Z](?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z])/,
+                  message: "password must have uppercase number and spacial character.",
+                },
               })}
-              type="text"
+              type="password"
               placeholder="password"
               className="input input-bordered w-full max-w-xs"
             />
             {errors.password && (
-              <p className="text-orange-700">{errors.password?.message}</p>
+              <p className="text-orange-500">{errors.password?.message}</p>
             )}
 
             <label className="label">
