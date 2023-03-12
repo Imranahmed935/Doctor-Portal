@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../../../Contexts/AuthProvider";
 
@@ -9,6 +10,7 @@ const Navbar = () => {
     handleSignOut()
       .then(() => {})
       .catch((error) => console.log(error));
+    toast.success("signOut Successfully!");
   };
 
   const menuItems = (
@@ -28,13 +30,36 @@ const Navbar = () => {
       </li>
 
       {user?.uid ? (
-        <li>
-          <button onClick={signOut}>signOut</button>
-        </li>
+        <>
+          <li>
+            {" "}
+            <Link to="/dashboard">Dashboard</Link>
+          </li>
+          <li className="mt-3 mr-4">{user.displayName}</li>
+          <li>
+            {user.photoURL ? (
+              <img className="mt-3 mr-4"
+                style={{ height: "50px" }}
+                rounded
+                src={user?.photoURL}
+                alt=""
+              />
+            ) : (
+              <p>000</p>
+            )}
+          </li>
+          <li>
+            <button className="bg-success" onClick={signOut}>
+              signOut
+            </button>
+          </li>
+        </>
       ) : (
         <li>
           {" "}
-          <Link to="login">Login</Link>
+          <Link className="bg-primary" to="login">
+            Login
+          </Link>
         </li>
       )}
     </React.Fragment>

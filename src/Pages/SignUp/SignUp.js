@@ -1,6 +1,8 @@
-import React, { useContext } from "react";
+import { GoogleAuthProvider } from "firebase/auth";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Contexts/AuthProvider";
 
 const SignUp = () => {
@@ -10,7 +12,22 @@ const SignUp = () => {
     handleSubmit,
   } = useForm();
 
-  const { createUser } = useContext(AuthContext);
+
+  const { createUser, updateUser, GoogleSignIn } = useContext(AuthContext);
+  const [signUpError, setSignUpError] = useState("");
+  const navigate =  useNavigate();
+
+  const Provider = new GoogleAuthProvider();
+
+  const handleGoogle = () => {
+    GoogleSignIn(Provider)
+      .then((result) => {
+        const user = result.user;
+        navigate('/')
+        
+      })
+      .catch((error) => console.log(error));
+  };
 
   const handleSignUp = (data) => {
     console.log(data);
@@ -18,8 +35,18 @@ const SignUp = () => {
       .then((result) => {
         const user = result.user;
         console.log(user);
+        toast.success("user created Successfully!");
+        const userInfo = {
+          displayName: data.name,
+        };
+        updateUser(userInfo)
+          .then(() => {})
+          .catch((error) => console.log(error));
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error.message);
+        setSignUpError(error.message);
+      });
   };
 
   return (
@@ -71,7 +98,8 @@ const SignUp = () => {
 
                 pattern: {
                   value: /.*[A-Z](?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z])/,
-                  message: "password must have uppercase number and spacial character.",
+                  message:
+                    "password must have uppercase number and spacial character.",
                 },
               })}
               type="password"
@@ -91,6 +119,9 @@ const SignUp = () => {
             value="Signup"
             type="submit"
           />
+          <div>
+            {signUpError && <p className="text-orange-700">{signUpError}</p>}
+          </div>
         </form>
         <p className="text-center text-white mt-2">
           Already have an account{" "}
@@ -98,8 +129,11 @@ const SignUp = () => {
             please Login
           </Link>{" "}
         </p>
-        <div className="divider text-white">OR</div>
-        <button className="uppercase bg-success text-center w-full p-3 rounded-full">
+        <div className="divider text-white">OR</div>{" "}
+        <button
+          onClick={handleGoogle}
+          className="uppercase bg-success text-center w-full p-3 rounded-full"
+        >
           Continue with Google
         </button>
       </div>

@@ -1,6 +1,9 @@
-import React, { useContext, useState} from "react";
+import { GoogleAuthProvider } from "firebase/auth";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
 import { AuthContext } from "../../Contexts/AuthProvider";
 
 const Login = () => {
@@ -10,15 +13,33 @@ const Login = () => {
     handleSubmit,
   } = useForm();
 
-  const { login } = useContext(AuthContext);
-  const [loginError, setLoginError] = useState('');
+  const { login, GoogleSignIn } = useContext(AuthContext);
+  const [loginError, setLoginError] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
+
+  const Provider = new GoogleAuthProvider();
+
+  const handleGoogle = () => {
+    GoogleSignIn(Provider)
+      .then((result) => {
+        const user = result.user;
+        navigate("/");
+      })
+      .catch((error) => console.log(error));
+  };
+
   const handleLogin = (data) => {
     console.log(data);
-    setLoginError('')
+    setLoginError("");
     login(data.email, data.password)
       .then((result) => {
         const user = result.user;
         console.log(user);
+        toast.success("user login Successfully!");
+        navigate(from, { replace: true });
       })
       .catch((error) => {
         console.log(error.message);
@@ -77,9 +98,7 @@ const Login = () => {
             type="submit"
           />
           <div>
-            {
-              loginError && <p className="text-orange-700">{loginError}</p>
-            }
+            {loginError && <p className="text-orange-700">{loginError}</p>}
           </div>
         </form>
         <p className="text-center text-white mt-2">
@@ -89,7 +108,10 @@ const Login = () => {
           </Link>{" "}
         </p>
         <div className="divider text-white">OR</div>
-        <button className="uppercase bg-success text-center w-full p-3 rounded-full">
+        <button
+          onClick={handleGoogle}
+          className="uppercase bg-success text-center w-full p-3 rounded-full"
+        >
           Continue with Google
         </button>
       </div>
