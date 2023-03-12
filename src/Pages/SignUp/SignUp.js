@@ -2,7 +2,7 @@ import { GoogleAuthProvider } from "firebase/auth";
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Contexts/AuthProvider";
 
 const SignUp = () => {
@@ -12,10 +12,13 @@ const SignUp = () => {
     handleSubmit,
   } = useForm();
 
-
   const { createUser, updateUser, GoogleSignIn } = useContext(AuthContext);
   const [signUpError, setSignUpError] = useState("");
-  const navigate =  useNavigate();
+  const navigate = useNavigate();
+
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
 
   const Provider = new GoogleAuthProvider();
 
@@ -23,8 +26,7 @@ const SignUp = () => {
     GoogleSignIn(Provider)
       .then((result) => {
         const user = result.user;
-        navigate('/')
-        
+        navigate("/");
       })
       .catch((error) => console.log(error));
   };
@@ -36,6 +38,7 @@ const SignUp = () => {
         const user = result.user;
         console.log(user);
         toast.success("user created Successfully!");
+        navigate(from, { replace: true });
         const userInfo = {
           displayName: data.name,
         };
@@ -50,7 +53,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="h-[800px] flex justify-center items-center ">
+    <div className="h-[800px] flex justify-center items-center bg-green-100 ">
       <div className="w-96 p-7 rounded shadow-xl bg-black ">
         <h1 className="text-4xl font-serif font-bold text-center text-success">
           SignUp
@@ -114,11 +117,13 @@ const SignUp = () => {
               <span className="label-text text-white">Forgot Password?</span>
             </label>
           </div>
+
           <input
             className="btn bg-success hover:bg-success border-none text-white w-full"
             value="Signup"
             type="submit"
           />
+
           <div>
             {signUpError && <p className="text-orange-700">{signUpError}</p>}
           </div>

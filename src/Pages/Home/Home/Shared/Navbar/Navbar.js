@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../../../Contexts/AuthProvider";
+import { FaUserCircle } from "react-icons/fa";
 
 const Navbar = () => {
   const { handleSignOut, user } = useContext(AuthContext);
@@ -35,23 +36,21 @@ const Navbar = () => {
             {" "}
             <Link to="/dashboard">Dashboard</Link>
           </li>
-          <li className="mt-3 mr-4">{user.displayName}</li>
+          <li className="lg:mt-3 sm:ml-4">{user.displayName}</li>
           <li>
             {user.photoURL ? (
-              <img className="mt-3 mr-4"
-                style={{ height: "50px" }}
+              <img
+                style={{ height: "60px", width: "60px" }}
                 rounded
                 src={user?.photoURL}
                 alt=""
               />
             ) : (
-              <p>000</p>
+              <FaUserCircle></FaUserCircle>
             )}
           </li>
           <li>
-            <button className="bg-success" onClick={signOut}>
-              signOut
-            </button>
+            <button onClick={signOut}>signOut</button>
           </li>
         </>
       ) : (
@@ -65,10 +64,10 @@ const Navbar = () => {
     </React.Fragment>
   );
   return (
-    <div className="navbar bg-base-100 flex justify-between">
+    <div className="navbar flex justify-between bg-green-100 ">
       <div className="navbar-start">
         <div className="dropdown">
-          <label tabIndex={0} className="btn btn-ghost lg:hidden">
+          <label tabIndex={0} className="btn btn-ghost bg-base-100 lg:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5"
@@ -86,14 +85,14 @@ const Navbar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+            className="menu menu-compact dropdown-content mt-3 p-2 bg-base-100 rounded-box w-52"
           >
             {menuItems}
           </ul>
         </div>
         <Link
           to="/"
-          className="btn btn-ghost bg-success normal-case text-3xl font-extrabold "
+          className="btn btn-ghost normal-case text-3xl font-extrabold "
         >
           Doctor Portal
         </Link>
