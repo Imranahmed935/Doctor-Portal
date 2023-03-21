@@ -1,9 +1,14 @@
-import { GoogleAuthProvider } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  sendEmailVerification,
+} from "firebase/auth";
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Contexts/AuthProvider";
+import app from "../../Firebase/Firebase.config";
 
 const SignUp = () => {
   const {
@@ -12,8 +17,25 @@ const SignUp = () => {
     handleSubmit,
   } = useForm();
 
+  const auth = getAuth(app);
+
   const { createUser, updateUser, GoogleSignIn } = useContext(AuthContext);
   const [signUpError, setSignUpError] = useState("");
+  const [passwordType, setPasswordType] = useState("password");
+  const [passwordInput, setPasswordInput] = useState("");
+
+  const handlePasswordChange = (event) => {
+    setPasswordInput(event.target.value);
+  };
+
+  const togglePassword = () => {
+    if (passwordType === "password") {
+      setPasswordType("text");
+      return;
+    }
+    setPasswordType("password");
+  };
+
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -31,12 +53,21 @@ const SignUp = () => {
       .catch((error) => console.log(error));
   };
 
+  const verifyEmail = () => {
+    return sendEmailVerification(auth.currentUser)
+      .then(() => {
+        alert("please check your email and verify your email address!");
+      })
+      .catch((error) => console.log(error));
+  };
+
   const handleSignUp = (data) => {
     console.log(data);
     createUser(data.email, data.password)
       .then((result) => {
         const user = result.user;
         console.log(user);
+        verifyEmail();
         toast.success("user created Successfully!");
         navigate(from, { replace: true });
         const userInfo = {
@@ -91,31 +122,41 @@ const SignUp = () => {
             <label className="label">
               <span className="label-text text-xl text-white">Password</span>
             </label>
-            <input
-              {...register("password", {
-                required: "password is required",
-                minLength: {
-                  value: 6,
-                  message: "password must be 6 character or longer",
-                },
+            <div>
+              <input
+                onClick={handlePasswordChange}
+                {...register(
+                  "password",
+                  { passwordInput },
+                  {
+                    required: "password is required",
+                    minLength: {
+                      value: 6,
+                      message: "password must be 6 character or longer",
+                    },
 
-                pattern: {
-                  value: /.*[A-Z](?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z])/,
-                  message:
-                    "password must have uppercase number and spacial character.",
-                },
-              })}
-              type="password"
-              placeholder="password"
-              className="input input-bordered w-full max-w-xs"
-            />
+                    pattern: {
+                      value: /.*[A-Z](?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z])/,
+                      message:
+                        "password must have uppercase number and spacial character.",
+                    },
+                  }
+                )}
+                type={passwordType}
+                placeholder="password"
+                className="input input-bordered w-full max-w-xs"
+              />
+              <h2
+                className="absolute ml-64 cursor-pointer -my-9"
+                onClick={togglePassword}
+              >
+                {passwordType === "password" ? <p>show</p> : <p>hide</p>}
+              </h2>
+            </div>
             {errors.password && (
               <p className="text-orange-500">{errors.password?.message}</p>
             )}
-
-            <label className="label">
-              <span className="label-text text-white">Forgot Password?</span>
-            </label>
+            ;
           </div>
 
           <input

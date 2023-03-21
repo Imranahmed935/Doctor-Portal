@@ -3,7 +3,6 @@ import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
 import { AuthContext } from "../../Contexts/AuthProvider";
 
 const Login = () => {
@@ -15,6 +14,20 @@ const Login = () => {
 
   const { login, GoogleSignIn } = useContext(AuthContext);
   const [loginError, setLoginError] = useState("");
+  const [passwordType, setPasswordType] = useState("password");
+  const [passwordInput, setPasswordInput] = useState("");
+
+  const handlePasswordChange = (event) => {
+    setPasswordInput(event.target.value);
+  };
+  const togglePassword = () => {
+    if (passwordType === "password") {
+      setPasswordType("text");
+      return;
+    }
+    setPasswordType("password");
+  };
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -72,24 +85,41 @@ const Login = () => {
             <label className="label">
               <span className="label-text text-xl text-white">Password</span>
             </label>
-            <input
-              type="password"
-              {...register("password", {
-                required: "password is Required",
-                minLength: {
-                  value: 6,
-                  message: "password must be 6 character or longer",
-                },
-              })}
-              placeholder="password"
-              className="input input-bordered w-full max-w-xs"
-            />
+
+            <div>
+              <input
+                onClick={handlePasswordChange}
+                type={passwordType}
+                {...register(
+                  "password",
+                  { passwordInput },
+                  {
+                    required: "password is Required",
+                    minLength: {
+                      value: 6,
+                      message: "password must be 6 character or longer",
+                    },
+                  }
+                )}
+                placeholder="password"
+                className="input input-bordered w-full max-w-xs"
+              />
+              <h2
+                className="absolute ml-64 cursor-pointer -my-9"
+                onClick={togglePassword}
+              >
+                {passwordType === "password" ? <p>show</p> : <p>hide</p>}
+              </h2>
+            </div>
+
             {errors.password && (
               <p className="text-orange-400 ml-5">{errors.password?.message}</p>
             )}
 
             <label className="label">
-              <span className="label-text text-white">Forgot Password?</span>
+              <Link to="/forgot">
+                <span className="label-text text-white">Forgot Password?</span>
+              </Link>
             </label>
           </div>
           <input

@@ -1,11 +1,22 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../../../../Contexts/AuthProvider";
 import { FaUserCircle } from "react-icons/fa";
+import { FaMoon } from "react-icons/fa";
+import { FaRegSun } from "react-icons/fa";
 
 const Navbar = () => {
   const { handleSignOut, user } = useContext(AuthContext);
+  const [theme, setTheme] = useState("light-theme");
+
+  const toggleTheme = () => {
+    theme === "dark-theme" ? setTheme("light-theme") : setTheme("dark-theme");
+  };
+
+  useEffect(() => {
+    document.body.className = theme;
+  }, [theme]);
 
   const signOut = () => {
     handleSignOut()
@@ -61,10 +72,13 @@ const Navbar = () => {
           </Link>
         </li>
       )}
+      <button onClick={() => toggleTheme()} className="btn ml-2">
+        {theme === "light-theme" ? <FaMoon className=" text-2xl"></FaMoon> : <FaRegSun className=" text-2xl"></FaRegSun>}
+      </button>
     </React.Fragment>
   );
   return (
-    <div className="navbar flex justify-between bg-green-100 ">
+    <div className="navbar flex justify-between ">
       <div className="navbar-start">
         <div className="dropdown">
           <label tabIndex={0} className="btn btn-ghost bg-base-100 lg:hidden">
