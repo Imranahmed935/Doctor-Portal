@@ -53,7 +53,7 @@ const Navbar = () => {
               <img
                 style={{ height: "60px", width: "60px" }}
                 rounded
-                src={user?.photoURL}
+                src={user.photoURL}
                 alt=""
               />
             ) : (
@@ -73,7 +73,11 @@ const Navbar = () => {
         </li>
       )}
       <button onClick={() => toggleTheme()} className="btn ml-2">
-        {theme === "light-theme" ? <FaMoon className=" text-2xl"></FaMoon> : <FaRegSun className=" text-2xl"></FaRegSun>}
+        {theme === "light-theme" ? (
+          <FaMoon className=" text-2xl"></FaMoon>
+        ) : (
+          <FaRegSun className=" text-2xl"></FaRegSun>
+        )}
       </button>
     </React.Fragment>
   );

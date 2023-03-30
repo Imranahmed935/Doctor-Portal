@@ -1,8 +1,9 @@
 import { format } from "date-fns";
 import React, { useContext } from "react";
+import { toast } from "react-hot-toast";
 import { AuthContext } from "../../../Contexts/AuthProvider";
 
-const BookingModal = ({ treatment, selected, setTreatment }) => {
+const BookingModal = ({ treatment, selected, setTreatment, refetch }) => {
   const { name, slots } = treatment;
   const { user } = useContext(AuthContext);
   const date = format(selected, "PP");
@@ -24,8 +25,23 @@ const BookingModal = ({ treatment, selected, setTreatment }) => {
       phone,
     };
 
-    console.log(booking);
-    setTreatment(null);
+    fetch("http://localhost:5000/bookings", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(booking),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.acknowledged) {
+          setTreatment(null);
+          toast.success("Booking Confirmed");
+          refetch();
+        } else {
+          toast.error(data.message);
+        }
+      });
   };
 
   return (
@@ -73,8 +89,8 @@ const BookingModal = ({ treatment, selected, setTreatment }) => {
             <input
               name="email"
               type="email"
-              readOnly
               defaultValue={user.email}
+              readOnly
               className="input input-bordered py-5 input-sm w-full "
             />
             <input
