@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Contexts/AuthProvider";
+import useToken from "../../hooks/useToken";
 
 const Login = () => {
   const {
@@ -16,6 +17,16 @@ const Login = () => {
   const [loginError, setLoginError] = useState("");
   const [passwordType, setPasswordType] = useState("password");
   const [passwordInput, setPasswordInput] = useState("");
+  const [createdUserLogin, setCreatedUserLogin] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
+
+  const [token] = useToken(createdUserLogin);
+  if (token) {
+    navigate(from, { replace: true });
+  }
 
   const handlePasswordChange = (event) => {
     setPasswordInput(event.target.value);
@@ -27,11 +38,6 @@ const Login = () => {
     }
     setPasswordType("password");
   };
-
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const from = location.state?.from?.pathname || "/";
 
   const Provider = new GoogleAuthProvider();
 
@@ -52,7 +58,7 @@ const Login = () => {
         const user = result.user;
         console.log(user);
         toast.success("user login Successfully!");
-        navigate(from, { replace: true });
+        setCreatedUserLogin(data.email);
       })
       .catch((error) => {
         console.log(error.message);

@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Contexts/AuthProvider";
 import app from "../../Firebase/Firebase.config";
+import useToken from "../../hooks/useToken";
 
 const SignUp = () => {
   const {
@@ -23,6 +24,18 @@ const SignUp = () => {
   const [signUpError, setSignUpError] = useState("");
   const [passwordType, setPasswordType] = useState("password");
   const [passwordInput, setPasswordInput] = useState("");
+  const [createdEmail, setCreatedEmail] = useState("");
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
+
+  const [token] = useToken(createdEmail);
+
+  if (token) {
+    navigate(from, { replace: true });
+  }
 
   const handlePasswordChange = (event) => {
     setPasswordInput(event.target.value);
@@ -35,12 +48,6 @@ const SignUp = () => {
     }
     setPasswordType("password");
   };
-
-  const navigate = useNavigate();
-
-  const location = useLocation();
-
-  const from = location.state?.from?.pathname || "/";
 
   const Provider = new GoogleAuthProvider();
 
@@ -69,18 +76,33 @@ const SignUp = () => {
         console.log(user);
         verifyEmail();
         toast.success("user created Successfully!");
-        navigate(from, { replace: true });
         const userInfo = {
           displayName: data.name,
         };
         updateUser(userInfo)
-          .then(() => {})
+          .then(() => {
+            collectUsers(data.name, data.email);
+          })
           .catch((error) => console.log(error));
       })
       .catch((error) => {
         console.log(error.message);
         setSignUpError(error.message);
       });
+  };
+
+  const collectUsers = (name, email) => {
+    const users = { name, email };
+    fetch("http://localhost:5000/users", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(users),
+    })
+      .then((res) => res.json())
+      .then((data) => {});
+    setCreatedEmail(email);
   };
 
   return (
