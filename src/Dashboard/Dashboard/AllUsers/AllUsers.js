@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import { toast } from "react-hot-toast";
 
 const AllUsers = () => {
   const { data: users, refetch } = useQuery({
@@ -10,18 +10,31 @@ const AllUsers = () => {
       return data;
     },
   });
-
   const handleAdmin = (id) => {
     fetch(`http://localhost:5000/users/admin/${id}`, {
       method: "PUT",
       headers: {
-        authorized: `bearer ${localStorage.getItem("accessToken")}`,
+        authorization: `bearer ${localStorage.getItem("accessToken")}`,
       },
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         if (data.modifiedCount > 0) {
           refetch();
+          toast.success("Admin added successfully");
+        }
+      });
+  };
+
+  const handleDelete = (id) => {
+    fetch(`http://localhost:5000/users/${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.deleteCount === 1) {
+          toast.success("user deleted successfully");
         }
       });
   };
@@ -47,7 +60,7 @@ const AllUsers = () => {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>
-                  {user.role !== "admin" && (
+                  {user?.role !== "admin" && (
                     <button
                       onClick={() => handleAdmin(user._id)}
                       className="btn btn-xs btn-secondary hover:btn-primary"
@@ -57,7 +70,10 @@ const AllUsers = () => {
                   )}
                 </td>
                 <td>
-                  <button className="btn btn-xs btn-primary hover:btn-secondary">
+                  <button
+                    onClick={() => handleDelete(user._id)}
+                    className="btn btn-xs btn-primary hover:btn-secondary"
+                  >
                     delete
                   </button>
                 </td>

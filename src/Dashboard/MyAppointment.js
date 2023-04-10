@@ -8,10 +8,10 @@ const MyAppointment = () => {
   const { data: bookings = [] } = useQuery({
     queryKey: ["bookings", user?.email],
     queryFn: async () => {
-      const res = fetch(url ,{
-        headers:{
-          authorization: `bearer ${localStorage.getItem('accessToken')}`
-        }
+      const res = fetch(url, {
+        headers: {
+          authorization: `bearer ${localStorage.getItem("accessToken")}`,
+        },
       });
       const data = (await res).json();
       return data;
@@ -19,11 +19,8 @@ const MyAppointment = () => {
   });
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div>
         <h4 className="text-2xl font-semibold mb-5">My Appointment</h4>
-        <button className="border-2 border-black rounded m-4 w-32 h-10 text-xl font-serif">
-          Imran
-        </button>
       </div>
       <div className="overflow-x-auto">
         <table className="table w-full">
@@ -37,15 +34,16 @@ const MyAppointment = () => {
             </tr>
           </thead>
           <tbody>
-            {bookings.map((booking, i) => (
-              <tr key={booking._id}>
-                <th>{i + 1}</th>
-                <td>{booking.patientName}</td>
-                <td>{booking.treatment}</td>
-                <td>{booking.appointment}</td>
-                <td>{booking.slot}</td>
-              </tr>
-            ))}
+            {bookings.length > 0 &&
+              bookings?.map((booking, i) => (
+                <tr key={booking._id}>
+                  <th>{i + 1}</th>
+                  <td>{booking.patientName}</td>
+                  <td>{booking.treatment}</td>
+                  <td>{booking.appointment}</td>
+                  <td>{booking.slot}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
