@@ -15,7 +15,7 @@ const AvailableAppointment = ({ selected }) => {
   } = useQuery({
     queryKey: ["services", date],
     queryFn: async () => {
-      const res = await fetch(`http://localhost:5000/services?date=${date}`);
+      const res = await fetch(`http://localhost:5000/v2/services?date=${date}`);
       const data = res.json();
       return data;
     },
@@ -36,6 +36,7 @@ const AvailableAppointment = ({ selected }) => {
             key={option._id}
             option={option}
             setTreatment={setTreatment}
+            refetch={refetch}
           ></BookAppointment>
         ))}
       </div>

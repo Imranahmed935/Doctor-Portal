@@ -33,15 +33,20 @@ const AllUsers = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.deleteCount === 1) {
+        console.log(data, "success");
+        if (data.deletedCount) {
+          console.log("deleted");
           toast.success("user deleted successfully");
+          refetch();
         }
       });
   };
 
   return (
     <div>
-      <h4 className="text-2xl font-semibold mb-5 ">All Users</h4>
+      <h4 className="text-2xl font-semibold mb-5 ">
+        All Users: {users?.length}
+      </h4>
       <div className="overflow-x-auto">
         <table className="table w-full">
           <thead>
