@@ -37,10 +37,6 @@ const Navbar = () => {
         <Link to="/about">About</Link>
       </li>
 
-      <li>
-        <Link to="reviews">Reviews</Link>
-      </li>
-
       {user?.uid ? (
         <>
           <li>
@@ -120,8 +116,11 @@ const Navbar = () => {
           {menuItems}
         </ul>
       </div>
-      <label tabIndex={0} className="btn btn-ghost bg-base-100 lg:hidden" htmlFor="dashboard-drawer">
-        
+      <label
+        tabIndex={0}
+        className="btn btn-ghost bg-base-100 lg:hidden"
+        htmlFor="dashboard-drawer"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-5 w-5"

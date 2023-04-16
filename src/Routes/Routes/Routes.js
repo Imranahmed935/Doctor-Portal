@@ -15,6 +15,7 @@ import ManageDoctors from "../../Dashboard/Dashboard/AddDoctor/ManageDoctors/Man
 import Payment from "../../Dashboard/Payment/Payment";
 import ErrorElement from "../../Shared/ErrorElement/ErrorElement";
 
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -41,6 +42,7 @@ export const router = createBrowserRouter([
         path: "/forgot",
         element: <ForgotPassword></ForgotPassword>,
       },
+
     ],
   },
   {
@@ -82,11 +84,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard/payment/:id",
-        element: (
-          <AdminRoutes>
-            <Payment></Payment>
-          </AdminRoutes>
-        ),
+        element: <Payment></Payment>,
         loader: ({ params }) =>
           fetch(`http://localhost:5000/bookings/${params.id}`),
       },
